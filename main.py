@@ -50,7 +50,7 @@ for uri in uris:
     loc = uri.split('=')[1].capitalize().split(',')[0]
 
     city_name = loc
-    API_key = 'bfc32c79f0c822551acce09747b834d3'
+    API_key = os.environ.get("open_weather_api_key")
     unit = 'metric'
     lang = 'de'
 
@@ -70,15 +70,15 @@ lang={lang}'
     print(f"status: {status}")
     print()
 
-##
-##    credentials = ServiceAccountCredentials.from_json_keyfile_dict(google_api_key_file, scope)
-##
-##    gc = gspread.service_account()
-##    sh = gc.open("data")
-##    worksheet = sh.get_worksheet(0)
-##
-##    new_row = [str(datetime.datetime.now()), max_temp, min_temp, loc, status]
-##    worksheet.append_row(new_row)
+    scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/spreadsheets',"https://www.googleapis.com/auth/drive.file","https://www.googleapis.com/auth/drive"]
+    credentials = ServiceAccountCredentials.from_json_keyfile_dict(create_keyfile_dict(), scope)
+
+    gc = gspread.authorize(credentials)
+    sh = gc.open("data")
+    worksheet = sh.get_worksheet(0)
+
+    new_row = [str(datetime.datetime.now()), max_temp, min_temp, loc, status]
+    worksheet.append_row(new_row)
 
 
 
