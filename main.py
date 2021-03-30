@@ -22,7 +22,7 @@ def create_keyfile_dict():
         "private_key": os.environ.get("SHEET_PRIVATE_KEY"),
         "client_email": os.environ.get("SHEET_CLIENT_EMAIL"),
         "client_id": os.environ.get("SHEET_CLIENT_ID"),
-        "revoke_uri": os.environ.get("SHEET_AUTH_URI"),
+        "auth_uri": os.environ.get("SHEET_AUTH_URI"),
         "token_uri": os.environ.get("SHEET_TOKEN_URI"),
         "auth_provider_x509_cert_url": os.environ.get("SHEET_AUTH_PROVIDER_X509_CERT_URL"),
         "client_x509_cert_url": os.environ.get("SHEET_CLIENT_X509_CERT_URL")
@@ -69,9 +69,12 @@ lang={lang}'
     print(f"status: {status}")
     print()
 
-    scope = ['https://www.googleapis.com/auth/spreadsheets',"https://www.googleapis.com/auth/drive.file","https://www.googleapis.com/auth/drive"]
+    scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/spreadsheets',"https://www.googleapis.com/auth/drive.file","https://www.googleapis.com/auth/drive"]
     print("A")
-    credentials = ServiceAccountCredentials.from_json_keyfile_dict(key_dict, scope)
+    credentials = ServiceAccountCredentials.from_json_keyfile_dict(key_dict,
+                                                                   scopes=scope,
+                                                                   token_uri=key_dict['auth_uri'],
+                                                                   revoke_uri=key_dict['token_uri'])
     print("B")
     gc = gspread.authorize(credentials)
     sh = gc.open("data")
