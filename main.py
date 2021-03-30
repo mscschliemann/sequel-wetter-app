@@ -3,7 +3,6 @@ import re, os, json
 import datetime
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-#from oauth2client import GOOGLE_REVOKE_URI, GOOGLE_TOKEN_URI, client
 
 data = {'time': [],
         'max': [],
@@ -30,11 +29,6 @@ def create_keyfile_dict():
     }
     return variables_keys
 
-key_dict = create_keyfile_dict()
-print(key_dict)
-print()
-
-
 for uri in uris:
     html = req.get(uri)
 
@@ -55,15 +49,10 @@ for uri in uris:
     unit = 'metric'
     lang = 'de'
 
-    api_url = f'http://api.openweathermap.org/data/2.5/weather?\
-q={city_name}&\
-appid={API_key}&\
-units={unit}&\
-lang={lang}'
+    api_url = f'http://api.openweathermap.org/data/2.5/weather?q={city_name}&appid={API_key}&units={unit}&lang={lang}'
 
     response = req.get(api_url).json()
     status =  response['weather'][0]['description']
-
 
     print(f'{loc} Temperatur {str(datetime.datetime.now())}')
     print(f'max: {max_temp}')
@@ -71,10 +60,12 @@ lang={lang}'
     print(f"status: {status}")
     print()
 
-    scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/spreadsheets',"https://www.googleapis.com/auth/drive.file","https://www.googleapis.com/auth/drive"]
-    print("A")
-    credentials = ServiceAccountCredentials.from_json_keyfile_dict(key_dict, scopes=scope)
-    print("B")
+    scope = ['https://spreadsheets.google.com/feeds',
+             'https://www.googleapis.com/auth/spreadsheets',
+             "https://www.googleapis.com/auth/drive.file",
+             "https://www.googleapis.com/auth/drive"]
+
+    credentials = ServiceAccountCredentials.from_json_keyfile_dict(create_keyfile_dict(), scopes=scope)
     gc = gspread.authorize(credentials)
     sh = gc.open("data")
     worksheet = sh.get_worksheet(0)
@@ -82,20 +73,3 @@ lang={lang}'
     new_row = [str(datetime.datetime.now()), max_temp, min_temp, loc, status]
     worksheet.append_row(new_row)
 
-
-
-      
-##if not os.path.exists('data.json'):
-##    with open('data.json', 'w') as f:
-##        json.dump(data, f)
-##
-##
-##with open('data.json', 'r') as f:
-##    data = json.load(f)
-##
-##data['time'].append(str(datetime.datetime.now()))
-##data['max'].append(max_temp)
-##data['min'].append(min_temp)
-##
-##with open('data.json', 'w') as f:
-##    json.dump(data, f, indent=4)
