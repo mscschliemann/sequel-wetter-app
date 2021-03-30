@@ -69,7 +69,7 @@ lang={lang}'
     print(f"status: {status}")
     print()
 
-    scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/spreadsheets',"https://www.googleapis.com/auth/drive.file","https://www.googleapis.com/auth/drive"]
+    scope = ['https://www.googleapis.com/auth/spreadsheets',"https://www.googleapis.com/auth/drive.file","https://www.googleapis.com/auth/drive"]
     print("A")
     credentials = ServiceAccountCredentials.from_json_keyfile_dict(key_dict, scope)
     print("B")
