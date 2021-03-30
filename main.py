@@ -29,10 +29,9 @@ def create_keyfile_dict():
     }
     return variables_keys
 
-print(create_keyfile_dict())
+key_dict = create_keyfile_dict()
+print(key_dict)
 
-
-print(os.environ)
 
 for uri in uris:
     html = req.get(uri)
@@ -71,8 +70,9 @@ lang={lang}'
     print()
 
     scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/spreadsheets',"https://www.googleapis.com/auth/drive.file","https://www.googleapis.com/auth/drive"]
-    credentials = ServiceAccountCredentials.from_json_keyfile_dict(create_keyfile_dict(), scope)
-
+    print("A")
+    credentials = ServiceAccountCredentials.from_json_keyfile_dict(key_dict, scope)
+    print("B")
     gc = gspread.authorize(credentials)
     sh = gc.open("data")
     worksheet = sh.get_worksheet(0)
