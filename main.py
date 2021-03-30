@@ -3,7 +3,7 @@ import re, os, json
 import datetime
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-from boto.s3.connection import S3Connection
+#from boto.s3.connection import S3Connection
 
 data = {'time': [],
         'max': [],
@@ -31,9 +31,8 @@ def create_keyfile_dict():
 
 print(create_keyfile_dict())
 
-s3 = S3Connection(os.environ['SHEET_TYPE'], os.environ['SHEET_PROJECT_ID'])
 
-print(s3)
+print(os.environ)
 
 for uri in uris:
     html = req.get(uri)
