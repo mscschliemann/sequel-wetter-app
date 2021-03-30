@@ -3,7 +3,7 @@ import re, os, json
 import datetime
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-#from boto.s3.connection import S3Connection
+from boto.s3.connection import S3Connection
 
 data = {'time': [],
         'max': [],
@@ -16,8 +16,8 @@ uris = ['https://www.wetter.de/deutschland/wetter-berlin-18228265.html?q=berlin'
 
 def create_keyfile_dict():
     variables_keys = {
-        "type": os.environ("SHEET_TYPE"),
-        "project_id": os.environ("SHEET_PROJECT_ID"),
+        "type": os.environ.get("SHEET_TYPE"),
+        "project_id": os.environ.get("SHEET_PROJECT_ID"),
         "private_key_id": os.environ.get("SHEET_PRIVATE_KEY_ID"),
         "private_key": os.environ.get("SHEET_PRIVATE_KEY"),
         "client_email": os.environ.get("SHEET_CLIENT_EMAIL"),
@@ -31,6 +31,9 @@ def create_keyfile_dict():
 
 print(create_keyfile_dict())
 
+s3 = S3Connection(os.environ['SHEET_TYPE'], os.environ['SHEET_PROJECT_ID'])
+
+print(s3)
 
 for uri in uris:
     html = req.get(uri)
