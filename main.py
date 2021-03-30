@@ -22,7 +22,7 @@ def create_keyfile_dict():
         "private_key": os.environ.get("SHEET_PRIVATE_KEY"),
         "client_email": os.environ.get("SHEET_CLIENT_EMAIL"),
         "client_id": os.environ.get("SHEET_CLIENT_ID"),
-        "auth_uri": os.environ.get("SHEET_AUTH_URI"),
+        "revoke_uri": os.environ.get("SHEET_AUTH_URI"),
         "token_uri": os.environ.get("SHEET_TOKEN_URI"),
         "auth_provider_x509_cert_url": os.environ.get("SHEET_AUTH_PROVIDER_X509_CERT_URL"),
         "client_x509_cert_url": os.environ.get("SHEET_CLIENT_X509_CERT_URL")
@@ -79,10 +79,6 @@ lang={lang}'
 
     new_row = [str(datetime.datetime.now()), max_temp, min_temp, loc, status]
     worksheet.append_row(new_row)
-
-
-
-
 
 
 
