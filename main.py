@@ -3,7 +3,7 @@ import re, os, json
 import datetime
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-#from boto.s3.connection import S3Connection
+from oauth2client import GOOGLE_REVOKE_URI, GOOGLE_TOKEN_URI, client
 
 data = {'time': [],
         'max': [],
@@ -73,8 +73,8 @@ lang={lang}'
     print("A")
     credentials = ServiceAccountCredentials.from_json_keyfile_dict(key_dict,
                                                                    scopes=scope,
-                                                                   token_uri=key_dict['auth_uri'],
-                                                                   revoke_uri=key_dict['token_uri'])
+                                                                   token_uri=GOOGLE_TOKEN_URI,
+                                                                   revoke_uri=GOOGLE_REVOKE_URI)
     print("B")
     gc = gspread.authorize(credentials)
     sh = gc.open("data")
