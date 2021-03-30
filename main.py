@@ -31,6 +31,9 @@ def create_keyfile_dict():
 
 key_dict = create_keyfile_dict()
 print(key_dict)
+print()
+print(GOOGLE_REVOKE_URI)
+print()
 
 
 for uri in uris:
@@ -82,6 +85,7 @@ lang={lang}'
 
     new_row = [str(datetime.datetime.now()), max_temp, min_temp, loc, status]
     worksheet.append_row(new_row)
+
 
 
 
