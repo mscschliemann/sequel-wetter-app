@@ -3,7 +3,7 @@ import re, os, json
 import datetime
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-from oauth2client import GOOGLE_REVOKE_URI, GOOGLE_TOKEN_URI, client
+#from oauth2client import GOOGLE_REVOKE_URI, GOOGLE_TOKEN_URI, client
 
 data = {'time': [],
         'max': [],
@@ -24,6 +24,7 @@ def create_keyfile_dict():
         "client_id": os.environ.get("SHEET_CLIENT_ID"),
         "auth_uri": os.environ.get("SHEET_AUTH_URI"),
         "token_uri": os.environ.get("SHEET_TOKEN_URI"),
+        "revoke_uri": os.environ.get("SHEET_REVOKE_URI"),
         "auth_provider_x509_cert_url": os.environ.get("SHEET_AUTH_PROVIDER_X509_CERT_URL"),
         "client_x509_cert_url": os.environ.get("SHEET_CLIENT_X509_CERT_URL")
     }
@@ -31,8 +32,6 @@ def create_keyfile_dict():
 
 key_dict = create_keyfile_dict()
 print(key_dict)
-print()
-print(GOOGLE_REVOKE_URI)
 print()
 
 
@@ -74,10 +73,7 @@ lang={lang}'
 
     scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/spreadsheets',"https://www.googleapis.com/auth/drive.file","https://www.googleapis.com/auth/drive"]
     print("A")
-    credentials = ServiceAccountCredentials.from_json_keyfile_dict(key_dict,
-                                                                   scopes=scope,
-                                                                   token_uri=GOOGLE_TOKEN_URI,
-                                                                   revoke_uri=GOOGLE_REVOKE_URI)
+    credentials = ServiceAccountCredentials.from_json_keyfile_dict(key_dict, scopes=scope)
     print("B")
     gc = gspread.authorize(credentials)
     sh = gc.open("data")
@@ -85,7 +81,6 @@ lang={lang}'
 
     new_row = [str(datetime.datetime.now()), max_temp, min_temp, loc, status]
     worksheet.append_row(new_row)
-
 
 
 
