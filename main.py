@@ -16,8 +16,8 @@ uris = ['https://www.wetter.de/deutschland/wetter-berlin-18228265.html?q=berlin'
 
 def create_keyfile_dict():
     variables_keys = {
-        "type": os.environ.get("SHEET_TYPE"),
-        "project_id": os.environ.get("SHEET_PROJECT_ID"),
+        "type": os.environ("SHEET_TYPE"),
+        "project_id": os.environ("SHEET_PROJECT_ID"),
         "private_key_id": os.environ.get("SHEET_PRIVATE_KEY_ID"),
         "private_key": os.environ.get("SHEET_PRIVATE_KEY"),
         "client_email": os.environ.get("SHEET_CLIENT_EMAIL"),
