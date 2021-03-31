@@ -1,4 +1,4 @@
-import requests as req
+import requests
 import re, os, json
 import datetime
 import gspread
@@ -8,10 +8,13 @@ data = {'time': [],
         'max': [],
         'min': []}
 
-uris = ['https://www.wetter.de/deutschland/wetter-berlin-18228265.html?q=berlin',
-        'https://www.wetter.de/deutschland/wetter-stuttgart-18224193.html?q=stuttgart',
-        'https://www.wetter.de/usa/wetter-springfield-18820972/wetterprognose.html?q=Springfield,%20Missouri,%20Vereinigte%20Staaten%20von%20Amerika']
+cities = ['Berlin', 'Stuttgart', 'Springfield']
+c_keys = [2950159, 2825297, 4409896]
 
+scope = ['https://spreadsheets.google.com/feeds',
+         'https://www.googleapis.com/auth/spreadsheets',
+         "https://www.googleapis.com/auth/drive.file",
+         "https://www.googleapis.com/auth/drive"]
 
 def create_keyfile_dict():
     variables_keys = {
@@ -29,47 +32,46 @@ def create_keyfile_dict():
     }
     return variables_keys
 
-for uri in uris:
-    html = req.get(uri)
+credentials = ServiceAccountCredentials.from_json_keyfile_dict(create_keyfile_dict(), scopes=scope)
+#credentials = ServiceAccountCredentials.from_json_keyfile_name('service_account.json', scopes=scope)
 
-    pattern_max = re.compile("<div class=\"weather-daybox__minMax__max\">")
-    pattern_min = re.compile("<div class=\"weather-daybox__minMax__min\">")
+gc = gspread.authorize(credentials)
+sh = gc.open("data")
+worksheet = sh.get_worksheet(0)
 
-    temp = pattern_max.search(html.text).end()
-    max_temp = int(html.text[temp:temp+2].replace('°', ''))
+API_key = 'bfc32c79f0c822551acce09747b834d3'
+unit = 'metric'
+lang = 'de'
+
+for city_id in c_keys:
+
+    uri = f'http://api.openweathermap.org/data/2.5/weather?id={city_id}&appid={API_key}&units={unit}&lang={lang}'
+    response = requests.get(uri).json()
+
+    status = response['weather'][0]['description']
+    temp = response['main']['temp']
+    press = response['main']['pressure']
+    humid = response['main']['humidity']
+    wind = response.get('wind', {'speed': 'na'})['speed']
+    cloudy = response.get('clouds', {'all': 'na'})['all']
+    rain = response.get('rain', {'rain.1h': 'na'})['rain.1h']
+    loc = response['name']
+
+    time = response['dt']
+
+##    print(city_id)
+##    print()
+##    print(status)
+##    print(temp)
+##    print(press)
+##    print(humid)
+##    print(wind)
+##    print(cloudy)
+##    print(rain)
+##    print(loc)
+##    print(time)
 
 
-    temp = pattern_min.search(html.text).end()
-    min_temp = int(html.text[temp:temp+2].replace('°', ''))
-
-    loc = uri.split('=')[1].capitalize().split(',')[0]
-
-    city_name = loc
-    API_key = os.environ.get("open_weather_api_key")
-    unit = 'metric'
-    lang = 'de'
-
-    api_url = f'http://api.openweathermap.org/data/2.5/weather?q={city_name}&appid={API_key}&units={unit}&lang={lang}'
-
-    response = req.get(api_url).json()
-    status =  response['weather'][0]['description']
-
-    print(f'{loc} Temperatur {str(datetime.datetime.now())}')
-    print(f'max: {max_temp}')
-    print(f'min: {min_temp}')
-    print(f"status: {status}")
-    print()
-
-    scope = ['https://spreadsheets.google.com/feeds',
-             'https://www.googleapis.com/auth/spreadsheets',
-             "https://www.googleapis.com/auth/drive.file",
-             "https://www.googleapis.com/auth/drive"]
-
-    credentials = ServiceAccountCredentials.from_json_keyfile_dict(create_keyfile_dict(), scopes=scope)
-    gc = gspread.authorize(credentials)
-    sh = gc.open("data")
-    worksheet = sh.get_worksheet(0)
-
-    new_row = [str(datetime.datetime.now()), max_temp, min_temp, loc, status]
+    new_row = [str(datetime.datetime.now()), temp, press, humid, wind, cloudy, rain, loc, status]
     worksheet.append_row(new_row)
 
