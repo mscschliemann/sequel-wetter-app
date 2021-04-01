@@ -48,7 +48,7 @@ for city_id in c_keys:
     uri = f'http://api.openweathermap.org/data/2.5/weather?id={city_id}&appid={API_key}&units={unit}&lang={lang}'
     response = requests.get(uri).json()
         
-    print('rain: ', response['rain'], file=sys.stderr)
+    print('rain: ', response.get('rain', 'leer'), file=sys.stderr)
 
     status = response['weather'][0]['description']
     temp = response['main']['temp']
