@@ -56,7 +56,7 @@ for city_id in c_keys:
     humid = response['main']['humidity']
     wind = response.get('wind', {'speed': 'na'})['speed']
     cloudy = response.get('clouds', {'all': 'na'})['all']
-    rain = response.get('rain', {'1h': 'na'})['1h']
+    rain = response.get('rain', {'1h': 0})['1h']
     loc = response['name']
 
     time = response['dt']
